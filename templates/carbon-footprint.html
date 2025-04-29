@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4 py-4">
+    <div class="row py-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm" style="min-height: 350px;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Carbon Footprint Calculator</h4>
+                    </div>
+                    <hr>
+                    <form action="/carbon-footprint" method="POST">
+                        <div class="form-group">
+                            <label for="electricity">Monthly Electricity Usage (kWh)</label>
+                            <input type="number" class="form-control" id="electricity" name="electricity" placeholder="Enter amount" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gas">Monthly Natural Gas Usage (m³)</label>
+                            <input type="number" class="form-control" id="gas" name="gas" placeholder="Enter amount" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="car">Monthly Car Miles</label>
+                            <input type="number" class="form-control" id="car" name="car" placeholder="Enter miles" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bus">Monthly Bus Miles</label>
+                            <input type="number" class="form-control" id="bus" name="bus" placeholder="Enter miles" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="train">Monthly Train Miles</label>
+                            <input type="number" class="form-control" id="train" name="train" placeholder="Enter miles" min="0" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark mt-3">Calculate Footprint</button>
+                    </form>
+
+                    {% if calculated %}
+                        <div class="alert alert-info mt-4 alert-dismissible fade show" role="alert">
+                            <h5>Your Monthly Carbon Footprint</h5>
+                            <p><strong>Total: </strong>{{ carbon_footprint }} kg CO₂</p>
+                            <p><strong>Estimated Offset Cost: </strong>£{{ carbon_offset_cost_gbp }}</p>
+                            <button type="button" class="close text-muted" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">History</h4>
+                    <hr>
+                    {% if is_logged_in() %}
+                        <p class="card-text">View your past carbon footprint calculations here:</p>
+                        {% if carbon_footprints %}
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Date</th>
+                                            <th>Electricity</th>
+                                            <th>Gas</th>
+                                            <th>Carbon Footprint</th>
+                                            <th>Offset Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cf in carbon_footprints %}
+                                            <tr>
+                                                <td>{{ cf.id }}</td>
+                                                <td>{{ cf.created_at }}</td>
+                                                <td>{{ cf.electricity_usage }} kWh</td>
+                                                <td>{{ cf.gas_usage }} m³</td>
+                                                <td>{{ cf.carbon_footprint }} kg</td>
+                                                <td>£{{ cf.carbon_offset }}</td>
+                                                <td>
+                                                    <form action="/carbon-footprint" method="POST">
+                                                        <input type="hidden" name="cf_id" value="{{ cf.id }}">
+                                                        <button type="submit" name="remove_calculation" value="true" class="btn btn-danger btn-sm">Remove</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="card-text">No past carbon footprint calculations found.</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="card-text">Please login to view your past carbon footprint calculations.</p>
+                        <div class="text-center d-flex justify-content-center align-items-center" style="height: 100px;">
+                            <a href="/login" class="btn btn-dark w-50">Login</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

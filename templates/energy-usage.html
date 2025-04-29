@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4 py-4">
+    <div class="row py-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm" style="min-height: 350px;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Energy Tracking Tool</h4>
+                    </div>
+                    <hr>
+                    <form action="/energy-usage" method="POST">
+                        <div class="form-group">
+                            <label for="occupants">Number of Occupants</label>
+                            <input type="number" class="form-control" id="occupants" name="occupants" placeholder="Enter number" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="house_size">House Size (sq. ft.)</label>
+                            <input type="number" class="form-control" id="house_size" name="house_size" placeholder="Enter size" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appliances">Number of Appliances</label>
+                            <input type="number" class="form-control" id="appliances" name="appliances" placeholder="Enter number" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hours">Average Daily Usage (hours)</label>
+                            <input type="number" class="form-control" id="hours" name="hours" placeholder="Enter hours" min="1" max="24" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="heating">Heating Type</label>
+                            <select class="form-control" id="heating" name="heating" required>
+                                <option value="electric">Electric</option>
+                                <option value="gas">Gas</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-dark mt-3">Calculate Energy Usage</button>
+                    </form>
+
+                    {% if calculated %}
+                        <div class="alert alert-info mt-4 alert-dismissible fade show" role="alert">
+                            <h5>Your Monthly Electricity Usage (kWh)</h5>
+                            <p><strong>Total: </strong>{{ electricity_usage }} kWh</p>
+                            <button type="button" class="close text-muted" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">History</h4>
+                        <hr>
+                        {% if is_logged_in() %}
+                            <p class="card-text">View your past energy usage calculations here:</p>
+                            {% if energy_usage_calculations %}
+                                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Date</th>
+                                                <th>Occupants</th>
+                                                <th>House Size</th>
+                                                <th>No. Appliances</th>
+                                                <th>Appliance Usage</th>
+                                                <th>Heating Type</th>
+                                                <th>Electricity Usage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ec in energy_usage_calculations %}
+                                                <tr>
+                                                    <td>{{ ec.id }}</td>
+                                                    <td>{{ ec.created_at }}</td>
+                                                    <td>{{ ec.occupants }}</td>
+                                                    <td>{{ ec.house_size }} sq. ft.</td>
+                                                    <td>{{ ec.num_appliances }}</td>
+                                                    <td>{{ ec.appliance_usage }} hours</td>
+                                                    <td>{{ ec.heating_type }}</td>
+                                                    <td>{{ ec.electricity_usage }} kWh</td>
+                                                    <td>
+                                                        <form action="/energy-usage" method="POST">
+                                                            <input type="hidden" name="ec_id" value="{{ ec.id }}">
+                                                            <button type="submit" name="remove_calculation" value="true" class="btn btn-danger btn-sm">Remove</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="card-text">No past energy usage calculations found.</p>
+                            {% endif %}
+                        {% else %}
+                            <p class="card-text">Please login to view your past energy usage calculations.</p>
+                            <div class="text-center d-flex justify-content-center align-items-center" style="height: 100px;">
+                                <a href="/login" class="btn btn-dark w-50">Login</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

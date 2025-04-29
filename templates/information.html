@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-solar-panel mr-2"></i>
+                        Solar Panel Information
+                    </h3>
+                    <p class="lead mb-4">Solar panels provide a clean energy source for your home. Solar panels convert sunlight into electricity through photovoltaic cells, reducing your reliance on fossil fuels and lowering your electricity bills. Modern solar installations can last 25-30 years and often pay for themselves within 7-10 years through energy savings.</p>
+                    <p>Key benefits include:</p>
+                    <ul>
+                        <li>Reduced electricity bills</li>
+                        <li>Lower carbon emissions</li>
+                        <li>Energy independence</li>
+                        <li>Potential government incentives and tax rebates</li>
+                        <li>Increased property value</li>
+                    </ul>
+                    <p>Begin your solar journey today by scheduling a consultation with our solar experts.</p>
+                    <a href="/booking" class="btn btn-dark">Book Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mb-4 d-flex align-items-center justify-content-center">
+            <div class="image-sphere">
+                <img src="/static/images/solar.jpg" alt="Solar Panel">
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-5 mb-4 d-flex align-items-center justify-content-center">
+            <div class="image-sphere">
+                <img src="/static/images/carbon.jpg" alt="Carbon Footprint">
+            </div>
+        </div>
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-shoe-prints mr-2"></i>
+                        Carbon Footprint Information
+                    </h3>
+                    <p class="lead mb-4">Your carbon footprint is the total amount of greenhouse gases produced by your activities, measured in tons of carbon dioxide equivalent. Reducing your carbon footprint helps combat climate change and promotes environmental sustainability.</p>
+                    <p>Common sources of carbon emissions include:</p>
+                    <ul>
+                        <li>Home energy usage (heating, cooling, electricity)</li>
+                        <li>Transportation (car, air travel)</li>
+                        <li>Food consumption (especially meat and dairy)</li>
+                        <li>Purchased goods and services</li>
+                        <li>Waste disposal</li>
+                    </ul>
+                    <p>Get started on your journey to a more sustainable lifestyle today.</p>
+                    <a href="/carbon-footprint" class="btn btn-dark">Calculate Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-bolt mr-2"></i>
+                        Energy Usage Information
+                    </h3>
+                    <p class="lead mb-4">Understanding your energy consumption patterns is the first step toward optimising usage and reducing costs. Most households can reduce their energy consumption by 10-30% through simple changes and energy-efficient upgrades.</p>
+                    <p>Tips to reduce energy usage:</p>
+                    <ul>
+                        <li>Use LED lighting throughout your home</li>
+                        <li>Upgrade to energy-efficient appliances</li>
+                        <li>Improve home insulation and seal drafts</li>
+                        <li>Install a programmable thermostat</li>
+                        <li>Unplug electronics when not in use to prevent phantom energy usage</li>
+                        <li>Consider renewable energy sources like solar panels</li>
+                    </ul>
+                    <p>Get started on tracking and optimizing your home's energy consumption today.</p>
+                    <a href="/energy-usage" class="btn btn-dark">Calculate Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mb-4 d-flex align-items-center justify-content-center">
+            <div class="image-sphere">
+                <img src="/static/images/energy.jpg" alt="Energy Usage">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

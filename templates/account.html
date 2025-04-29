@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 py-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Account Information</h4>
+                    <hr>
+                    <div class="d-flex flex-column">
+                        <form action="/account" method="POST">
+                            <button type="submit" name="account_details" value="true" class="btn btn-dark w-100">Account Details</button>
+                        </form>
+                        <form action="/account" method="POST" class="mt-2">
+                            <button type="submit" name="booking_details" value="true" class="btn btn-dark w-100">Booking Details</button>
+                        </form>
+                        <form action="/account" method="POST" class="mt-2">
+                            <button type="submit" name="show_delete_confirmation" value="true" class="btn btn-outline-danger w-100">Delete Account</button>
+                        </form>
+                        {% if is_admin %}
+                            <form action="/account" method="POST" class="mt-5">
+                                <button type="submit" name="admin_panel" value="true" class="btn btn-dark w-100">Admin Panel</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if show_delete_confirmation %}
+            <div class="position-fixed" style="top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 9998; display: flex; align-items: center; justify-content: center;">
+                <div class="col-md-3 mx-auto">
+                    <div class="card shadow-lg" style="transform: translateY(-50px);">
+                        <div class="card-body">
+                            <h4 class="card-title">Delete Account</h4>
+                            <hr>
+                            <p class="card-text">Are you sure you want to delete your account?</p>
+                            <form action="/account" method="POST">
+                                <button type="submit" name="cancel_delete" value="true" class="btn btn-dark">Cancel</button>
+                                <button type="submit" name="delete_account" value="true" class="btn btn-danger">Delete Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if show_account_details != False %}
+            <div class="col-md-9">
+                <div class="card shadow-sm" style="min-height: 350px;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">Account Details</h4>
+                            {% if not edit_mode %}
+                                <form action="/account" method="POST">
+                                    <button type="submit" name="enable_edit_mode" value="true" class="btn btn-sm btn-dark">
+                                        <i class="fas fa-edit mr-1"></i> Edit Profile
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <hr>
+                        
+                        {% if edit_mode %}
+                        <form action="/account" method="POST" class="mt-3">
+                            <div class="form-group row">
+                                <label for="username" class="col-sm-3 col-form-label">Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ user_username }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ user_email }}">
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <div class="mb-3">
+                                <h6>Password Settings</h6>
+                                <p class="text-muted small">To update username/email only: Enter just your current password</p>
+                                <p class="text-muted small">To change password: Fill in all password fields below</p>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label for="current_password" class="col-sm-3 col-form-label">Current Password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Required to make any changes">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row password-change-section">
+                                <label for="new_password" class="col-sm-3 col-form-label">New Password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Only needed when changing password" 
+                                        pattern="(?=.*\d)(?=.*[_@$!%*?&_])(?=.*[A-Z])[A-Za-z\d_@$!%*?&_]{8,}" 
+                                            title="Password must be at least 8 characters long, contain at least one number, one special character, and one uppercase letter.">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row password-change-section">
+                                <label for="confirm_password" class="col-sm-3 col-form-label">Confirm Password</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Only needed when changing password">
+                                </div>
+                            </div>
+                            <div class="form-group row mt-4">
+                                <div class="col-sm-9 offset-sm-3">
+                                    <button type="submit" name="save_profile" value="true" class="btn btn-success">Save Changes</button>
+                                    <button type="submit" name="cancel_edit" value="true" class="btn btn-secondary ml-2" formnovalidate>Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                        {% else %}
+                        <div class="mt-4">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user text-dark mr-3"></i>
+                                        <div>
+                                            <strong>Username:</strong>
+                                            <div>{{ user_username }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-envelope text-dark mr-3"></i>
+                                        <div>
+                                            <strong>Email:</strong>
+                                            <div>{{ user_email }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar-alt text-dark mr-3"></i>
+                                        <div>
+                                            <strong>Date Joined:</strong>
+                                            <div>{{ user_date_joined }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-shield-alt text-dark mr-3"></i>
+                                        <div>
+                                            <strong>Account Type:</strong>
+                                            <div>
+                                                {% if is_admin %}
+                                                <span class="badge badge-dark">Administrator</span>
+                                                {% else %}
+                                                <span class="badge badge-secondary">Standard User</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% elif show_booking_details == True %}
+            <div class="col-md-9">
+                <div class="card shadow-sm" style="min-height: 350px;">
+                    <div class="card-body">
+                        <h4 class="card-title">Booking Details</h4>
+                        <hr>
+                        
+                        {% if bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                        <tr>
+                                            <td>{{ booking.id }}</td>
+                                            <td>{{ booking.booking_date }}</td>
+                                            <td>{{ booking.booking_time }}</td>
+                                            <td>{{ booking.booking_type }}</td>
+                                            <td>
+                                                <span class="badge badge-{% if booking.status == 'pending' %}warning{% elif booking.status == 'confirmed' %}success{% else %}danger{% endif %}">
+                                                    {{ booking.status }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form action="/account" method="POST">
+                                                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                                    <button type="submit" name="cancel_booking" value="true" class="btn btn-danger btn-sm">Cancel</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">You don't have any bookings yet.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% elif show_admin_panel == True %}
+            <div class="col-md-9">
+                <div class="card shadow-sm" style="min-height: 350px;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">Admin Panel</h4>
+                            <div>
+                                {% if not view_users %}
+                                    <form action="/account" method="POST" class="d-inline">
+                                        <button type="submit" name="enable_view_users" value="true" class="btn btn-sm btn-dark">
+                                            <i class="fas fa-users mr-1"></i> View Users
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form action="/account" method="POST" class="d-inline">
+                                        <button type="submit" name="enable_view_bookings" value="true" class="btn btn-sm btn-dark">
+                                            <i class="fas fa-calendar-check mr-1"></i> View Bookings
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <hr>
+                        
+                        {% if not view_users and bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>User</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                            <tr>
+                                                <td>{{ booking.id }}</td>
+                                                <td>{{ booking.user_id }}</td>
+                                                <td>{{ booking.booking_date }}</td>
+                                                <td>{{ booking.booking_time }}</td>
+                                                <td>{{ booking.booking_type }}</td>
+                                                <td>
+                                                    <span class="badge badge-{% if booking.status == 'pending' %}warning{% elif booking.status == 'confirmed' %}success{% else %}danger{% endif %}">
+                                                        {{ booking.status }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <form action="/account" method="POST" class="d-flex">
+                                                        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                                        <select name="new_status" class="form-control form-control-sm mr-2">
+                                                            <option value="pending" {% if booking.status == 'pending' %}selected{% endif %}>Pending</option>
+                                                            <option value="confirmed" {% if booking.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                                            <option value="denied" {% if booking.status == 'denied' %}selected{% endif %}>Denied</option>
+                                                        </select>
+                                                        <button type="submit" name="update_booking_status" value="true" class="btn btn-primary btn-sm">Update</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% elif view_users and users %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Date Joined</th>
+                                            <th>Permissions</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{ user.id }}</td>
+                                                <td>{{ user.username }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>{{ user.created_at }}</td>
+                                                <td>
+                                                    {% if user.admin == 1 %}
+                                                        <span class="badge badge-dark">Admin</span>
+                                                    {% else %}
+                                                        <span class="badge badge-secondary">User</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <form action="/account" method="POST" class="mr-2">
+                                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                            <div class="d-flex">
+                                                                <select name="new_permissions" class="form-control form-control-sm mr-2" style="min-width: 100px; width: auto;">
+                                                                    <option value="1" {% if user.admin == 1 %}selected{% endif %}>Admin</option>
+                                                                    <option value="0" {% if user.admin == 0 %}selected{% endif %}>User</option>
+                                                                </select>
+                                                                <button type="submit" name="update_user_permissions" value="true" class="btn btn-primary btn-sm">Update</button>
+                                                            </div>
+                                                        </form>
+                                                        <form action="/account" method="POST">
+                                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                            <button type="submit" name="delete_user" value="true" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">No users found in the system.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

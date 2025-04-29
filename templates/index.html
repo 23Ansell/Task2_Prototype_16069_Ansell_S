@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="hero-section vh-60 d-flex align-items-center justify-content-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center text-white">
+                <h1 class="display-4 fw-bold mb-4">Welcome to Rolsa Technologies</h1>
+                <p class="lead mb-4">Get started with Solar Panel technology with expert guidance and resources</p>
+                <a href="/information" class="btn btn-outline-light btn-lg">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-solar-panel mr-2"></i>
+                        Installations & Consultations
+                    </h3>
+                    <p class="card-text">Book installations & consultation with our experts to get started with new smart technology</p>
+                    <a href="/booking" class="btn btn-dark">Book Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-shoe-prints mr-2"></i>
+                        Carbon Footprint Calculator
+                    </h3>
+                    <p class="card-text">Calculate your carbon footprint and learn how to reduce it with our calculator</p>
+                    <a href="/carbon-footprint" class="btn btn-dark">Calculate Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-dark">
+                        <i class="fa-solid fa-bolt mr-2"></i>
+                        Energy Usage Calculator
+                    </h3>
+                    <p class="card-text">Calculate your energy usage and learn how to reduce it with our calculator</p>
+                    <a href="/energy-usage" class="btn btn-dark">Calculate Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

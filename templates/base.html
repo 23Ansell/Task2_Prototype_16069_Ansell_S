@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolsa Technologies</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Rolsa Technologies</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/information">Information</a>
+                <a class="nav-item nav-link" href="/booking">Booking</a>
+                <a class="nav-item nav-link" href="/carbon-footprint">Carbon Footprint Calc</a>
+                <a class="nav-item nav-link" href="/energy-usage">Energy Tracking Tool</a>
+            </div>
+            {% if not is_logged_in() %}
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" href="/login">Login</a>
+                    <a class="nav-item nav-link" href="/register">Register</a>
+                </div>
+            {% else %}
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" href="/account">Account</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="container mt-3 align-items-center">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show flash-message" role="alert">
+                    {{ message }}
+                    <button type="button" class="close text-muted" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+    
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-auto">
+        <div class="container text-center">
+            <h2 class="mb-4">Ready to Take Control of Your Environmental Health?</h2>
+            {% if not is_logged_in() %}
+                <p class="lead mb-4">Join our community today and access all our features</p>
+                <a href="/register" class="btn btn-outline-light btn-lg mr-3">Sign Up Now</a>
+                <a href="/login" class="btn btn-outline-light btn-lg">Login</a>
+            {% else %}
+                <p class="lead mb-4">Explore the information we provide</p>
+                <a href="/information" class="btn btn-outline-light btn-lg">Explore</a>
+            {% endif %}
+        </div>
+    </footer>
+
+    <!-- Javascript Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

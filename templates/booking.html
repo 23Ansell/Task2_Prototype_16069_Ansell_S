@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 py-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Booking Information</h4>
+                    <p class="card-text">Schedule your installations and consultations with our experts.</p>
+                    <hr>
+                    <div class="d-flex flex-column">
+                        <p><i class="fas fa-info-circle mr-2"></i>Fill in the required details</p>
+                        <p><i class="fas fa-user mr-2"></i>Choose your booking type</p>
+                        <p><i class="fas fa-calendar-check mr-2"></i>Select a suitable date and time</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Provide your address</p>
+                        <p><i class="fas fa-check-circle mr-2"></i>Confirm your booking</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="progress mb-4">
+                <div class="progress-bar bg-dark" role="progressbar" style="width: {{ progress_percentage }}%;" 
+                    aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">Step {{ booking_stage }} of 5
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form action="/booking" method="post">
+                        <input type="hidden" name="current_stage" value="{{ booking_stage }}">
+                        
+                        {% if booking_stage == 1 %}
+                            <h3 class="card-title mb-4">Personal Details</h3>
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ session.get('booking_name', '') }}" required>
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" value="{{ session.get('booking_address', '') }}" required>
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                    pattern="^(\+44|0)[0-9]{10,11}$" 
+                                    title="Please enter a valid UK phone number (starting with 0 or +44)"
+                                    value="{{ session.get('booking_phone', '') }}" required>
+                                <small class="form-text text-muted">Format: UK number (e.g., 07123456789 or +447123456789)</small>
+                            </div>
+                        
+                        {% elif booking_stage == 2 %}
+                            <h3 class="card-title mb-4">Choose Your Booking Type</h3>
+                            <div class="form-group">
+                                <div class="custom-control custom-radio mb-3">
+                                    <input type="radio" id="consultation" name="booking_type" class="custom-control-input" value="consultation" {% if session.get('booking_booking_type') == 'consultation' %}checked{% endif %} required>
+                                    <label class="custom-control-label" for="consultation">Consultation</label>
+                                </div>
+                                <div class="custom-control custom-radio mb-3">
+                                    <input type="radio" id="installation" name="booking_type" class="custom-control-input" value="installation" {% if session.get('booking_booking_type') == 'installation' %}checked{% endif %}>
+                                    <label class="custom-control-label" for="installation">Installation</label>
+                                </div>
+                            </div>
+
+                        {% elif booking_stage == 3 %}
+                            {% if session.get('booking_booking_type', '') == 'consultation' %}
+                                <h3 class="card-title mb-4">Select Your Consultation Details</h3>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="solar_panels" name="solar_panels" 
+                                            {% if session.get('booking_solar_panels') == 'yes' %}checked{% endif %}>
+                                        <label class="custom-control-label" for="solar_panels">Interested in Solar Panels</label>
+                                    </div>
+                                    <small class="form-text text-muted">Check this box if you are interested in solar panels</small>
+                                </div>
+                                
+                                <div class="form-group mt-4">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="energy_management" name="energy_management" 
+                                            {% if session.get('booking_energy_management') == 'yes' %}checked{% endif %}>
+                                        <label class="custom-control-label" for="energy_management">Add Energy Management System</label>
+                                    </div>
+                                    <small class="form-text text-muted">Check this box if you are interested in an energy management system</small>
+                                </div>
+                        
+                                <div class="form-group mt-4">
+                                    <label for="additional_info">Additional Information</label>
+                                    <textarea class="form-control" id="additional_info" name="additional_info" rows="3">{{ session.get('booking_additional_info', '') }}</textarea>
+                                    <small class="form-text text-muted">Provide any additional information you would like to discuss during your consultation</small>
+                                </div>
+                        
+                            {% elif session.get('booking_booking_type', '') == 'installation' %}
+                                <h3 class="card-title mb-4">Select Your Installation Details</h3>
+                                <div class="form-group">
+                                    <label for="solar_panels_quantity">Number of Solar Panels (0-20)</label>
+                                    <input type="number" class="form-control" id="solar_panels_quantity" name="solar_panels_quantity" 
+                                        min="0" max="20" value="{{ session.get('booking_solar_panels_quantity', 0) }}">
+                                    <small class="form-text text-muted">Select how many solar panels you would like to install (up to 20)</small>
+                                </div>
+                                
+                                <div class="form-group mt-4">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="energy_management" name="energy_management" 
+                                            {% if session.get('booking_energy_management') == 'yes' %}checked{% endif %}>
+                                        <label class="custom-control-label" for="energy_management">Add Energy Management System</label>
+                                    </div>
+                                    <small class="form-text text-muted">An energy management system helps optimize your solar panel performance</small>
+                                </div>
+                            {% endif %}
+                            
+                        {% elif booking_stage == 4 %}
+                            <h3 class="card-title mb-4">Select Date and Time</h3>
+                            <div class="form-group">
+                                <label for="date">Preferred Date</label>
+                                <input type="date" class="form-control" id="date" name="date" min="{{ today_date }}"
+                                    value="{{ session.get('booking_date', '') }}" required>
+                                <label for="time">Preferred Time</label>
+                                <input type="time" class="form-control" id="time" name="time" value="{{ session.get('booking_time', '') }}" required>
+                            </div>
+                            
+                        {% elif booking_stage == 5 %}
+                            <h3 class="card-title mb-4">Confirm Your Booking</h3>
+                            <div class="confirmation-details">
+                                <p><strong>Name:</strong> {{ session.get('booking_name', '') }}</p>
+                                <p><strong>Address:</strong> {{ session.get('booking_address', '') }}</p>
+                                <p><strong>Phone:</strong> {{ session.get('booking_phone', '') }}</p>
+                                <p><strong>Booking Type:</strong> {{ session.get('booking_booking_type', '').capitalize() }}</p>
+                                
+                                {% if session.get('booking_booking_type') == 'consultation' %}
+                                    <p><strong>Interested in Solar Panels:</strong> {{ 'Yes' if session.get('booking_solar_panels') == 'yes' else 'No' }}</p>
+                                    <p><strong>Interested in Energy Management:</strong> {{ 'Yes' if session.get('booking_energy_management') == 'yes' else 'No' }}</p>
+                                    {% if session.get('booking_additional_info') %}
+                                        <p><strong>Additional Information:</strong> {{ session.get('booking_additional_info', '') }}</p>
+                                    {% endif %}
+                                {% elif session.get('booking_booking_type') == 'installation' %}
+                                    <p><strong>Number of Solar Panels:</strong> {{ session.get('booking_solar_panels_quantity', '0') }}</p>
+                                    <p><strong>Energy Management System:</strong> {{ 'Yes' if session.get('booking_energy_management') == 'yes' else 'No' }}</p>
+                                {% endif %}
+                                
+                                <p><strong>Date:</strong> {{ session.get('booking_date', '') }}</p>
+                                <p><strong>Time:</strong> {{ session.get('booking_time', '') }}</p>
+                                
+                                <div class="alert alert-info">
+                                    <p>Please check all details are correct before submitting your booking.</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <div>
+                                {% if booking_stage == 5 %}
+                                    <button type="submit" name="submit_booking" value="true" class="btn btn-success">Submit Booking</button>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if booking_stage > 1 %}
+                                    <button type="submit" name="prev_stage" value="true" class="btn btn-secondary mr-2" formnovalidate>Previous Step</button>
+                                {% endif %}
+                                
+                                {% if booking_stage < 5 %}
+                                    <button type="submit" name="next_stage" value="true" class="btn btn-dark">Next Step</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
